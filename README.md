@@ -6,7 +6,7 @@
 проверкой доступа.
 
 ### Модель предметной области
-![](./docs/DomainDiagram.svg)
+![](./!docs/DomainDiagram.svg)
 
 ### Случаи использования (use cases)
 - Регистрация посетителя (Member)
@@ -20,8 +20,8 @@
 - Регистрация нового администратора
 - Аутентификация администратора
 
-Подробнее: [документация случаев использования](./docs/UseCases.md).
+Подробнее: [документация случаев использования](!docs/UseCases.md).
 
-Также в папке [docs](./docs/) расположены [диаграммы классов](./docs/classesDiagrams/) (по одной на каждый микросервис) и [диаграммы последовательности](./docs/sequenceDiagrams/).
+Также в папке [!docs](./!docs/) расположены [диаграммы классов](!docs/classesDiagrams/) (по одной на каждый микросервис) и [диаграммы последовательности](!docs/sequenceDiagrams/).
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/v9cQFoXZ)
