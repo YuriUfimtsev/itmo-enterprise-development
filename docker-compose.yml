@@ -1,0 +1,38 @@
+services:
+  auth-db:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+
+  member-db:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_DB: member_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - member-data:/var/lib/postgresql/data
+
+  rateplan-db:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_DB: rateplan_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5434:5432'
+    volumes:
+      - rateplan-data:/var/lib/postgresql/data
+
+volumes:
+  auth-data:
+  member-data:
+  rateplan-data:
