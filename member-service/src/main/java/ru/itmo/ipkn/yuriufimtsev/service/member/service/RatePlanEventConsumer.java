@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import ru.itmo.ipkn.yuriufimtsev.service.member.model.PolicyType;
 import ru.itmo.ipkn.yuriufimtsev.service.member.model.RatePlanSnapshot;
@@ -22,7 +23,22 @@ public class RatePlanEventConsumer {
     private final RatePlanSnapshotRepository ratePlanSnapshotRepository;
     private final ObjectMapper objectMapper;
 
-    public void handleRatePlanUpsert(String payload) {
+    @KafkaListener(topics = "rateplan-events", groupId = "member-service")
+    public void onMessage(String message) {
+        int separatorIndex = message.indexOf(':');
+        String eventType = message.substring(0, separatorIndex);
+        String payload = message.substring(separatorIndex + 1);
+
+        log.info("Received Kafka event: type={}", eventType);
+
+        if ("DEACTIVATED".equals(eventType)) {
+            handleRatePlanDeactivate(payload);
+        } else {
+            handleRatePlanUpsert(payload);
+        }
+    }
+
+    private void handleRatePlanUpsert(String payload) {
         try {
             JsonNode node = objectMapper.readTree(payload);
 
@@ -53,7 +69,7 @@ public class RatePlanEventConsumer {
         }
     }
 
-    public void handleRatePlanDeactivate(String payload) {
+    private void handleRatePlanDeactivate(String payload) {
         try {
             JsonNode node = objectMapper.readTree(payload);
             Long id = node.get("id").asLong();

@@ -87,10 +87,12 @@ services:
       - '8082:8082'
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://member-db:5432/member_db
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:9092
       EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
     depends_on:
       - member-db
       - eureka
+      - kafka
 
   rateplan-service:
     build:
