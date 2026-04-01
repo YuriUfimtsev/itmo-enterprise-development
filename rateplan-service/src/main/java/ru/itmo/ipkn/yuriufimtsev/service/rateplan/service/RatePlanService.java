@@ -69,6 +69,10 @@ public class RatePlanService {
         saveOutboxEvent(ratePlan, "DEACTIVATED");
     }
 
+    public RatePlan getRatePlan(Long id) {
+        return findActiveOrThrow(id);
+    }
+
     public List<RatePlan> searchRatePlans(RatePlanSearchRequest request) {
         return ratePlanRepository.searchActual(
                 request.getPolicyType(), request.getDaysDuration(),

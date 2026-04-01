@@ -35,6 +35,23 @@ class RatePlanControllerTest {
     private RatePlanService ratePlanService;
 
     @Test
+    void getRatePlan_returns200() throws Exception {
+        RatePlan plan = new RatePlan();
+        plan.setId(1L);
+        plan.setPolicyType(PolicyType.Unlimited);
+        plan.setDaysDuration(30);
+        plan.setPrice(BigDecimal.valueOf(5000));
+
+        when(ratePlanService.getRatePlan(1L)).thenReturn(plan);
+
+        mockMvc.perform(get("/api/rate-plans/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.policyType").value("Unlimited"))
+                .andExpect(jsonPath("$._links.self.href").exists());
+    }
+
+    @Test
     void createRatePlan_returns200() throws Exception {
         RatePlanCreateRequest request = new RatePlanCreateRequest();
         request.setPolicyType(PolicyType.Unlimited);

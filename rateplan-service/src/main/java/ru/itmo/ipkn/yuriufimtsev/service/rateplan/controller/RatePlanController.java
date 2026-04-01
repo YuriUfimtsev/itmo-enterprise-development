@@ -32,6 +32,13 @@ public class RatePlanController {
         return ResponseEntity.ok(toModel(created));
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Получение тарифного плана по Id")
+    public ResponseEntity<EntityModel<RatePlan>> getRatePlan(@PathVariable Long id) {
+        RatePlan ratePlan = ratePlanService.getRatePlan(id);
+        return ResponseEntity.ok(toModel(ratePlan));
+    }
+
     @PutMapping("/{id}/price")
     @Operation(summary = "Обновление цены тарифного плана")
     public ResponseEntity<Void> updatePrice(@PathVariable Long id,
@@ -59,6 +66,7 @@ public class RatePlanController {
 
     private EntityModel<RatePlan> toModel(RatePlan ratePlan) {
         return EntityModel.of(ratePlan,
+                linkTo(methodOn(RatePlanController.class).getRatePlan(ratePlan.getId())).withSelfRel(),
                 linkTo(methodOn(RatePlanController.class).searchRatePlans(null)).withRel("rate-plans"),
                 linkTo(methodOn(RatePlanController.class).deleteRatePlan(ratePlan.getId())).withRel("delete"));
     }
