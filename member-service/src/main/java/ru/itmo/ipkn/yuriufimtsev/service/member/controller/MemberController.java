@@ -22,6 +22,14 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Получение посетителя по Id")
+    public ResponseEntity<EntityModel<Member>> getMember(@PathVariable Long id) {
+        Member member = memberService.findById(id);
+        return ResponseEntity.ok(EntityModel.of(member,
+                linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel()));
+    }
+
     @PostMapping
     @Operation(summary = "Регистрация посетителя")
     public ResponseEntity<EntityModel<Map<String, Long>>> registerMember(@RequestParam String firstName,

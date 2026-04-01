@@ -25,6 +25,18 @@ class MemberControllerTest {
     private MemberService memberService;
 
     @Test
+    void getMember_returns200() throws Exception {
+        Member member = new Member("Ivan", "Ivanov", LocalDate.of(2000, 1, 1), "user@test.com");
+        member.setId(1L);
+        when(memberService.findById(1L)).thenReturn(member);
+
+        mockMvc.perform(get("/api/members/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("Ivan"))
+                .andExpect(jsonPath("$._links.self.href").exists());
+    }
+
+    @Test
     void registerMember_returns200() throws Exception {
         when(memberService.registerMember(any(), any(), any(), any())).thenReturn(1L);
 

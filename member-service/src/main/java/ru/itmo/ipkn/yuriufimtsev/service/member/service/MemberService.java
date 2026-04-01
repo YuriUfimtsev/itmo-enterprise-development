@@ -22,7 +22,6 @@ public class MemberService {
     private final RatePlanSnapshotRepository ratePlanSnapshotRepository;
 
 
-    // Зачем Transactional в начале метода?
     @Transactional
     public Long registerMember(String firstName, String lastName, LocalDate birthDate, String email) {
         memberRepository.findByEmail(email).ifPresent(existing -> {
@@ -60,6 +59,12 @@ public class MemberService {
         subscription.setFrom(today);
         subscription.setTo(today.plusDays(ratePlan.getDaysDuration()));
         subscriptionRepository.save(subscription);
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Посетитель с идентификатором " + id + " не найден"));
     }
 
     public Member findByEmail(String email) {
