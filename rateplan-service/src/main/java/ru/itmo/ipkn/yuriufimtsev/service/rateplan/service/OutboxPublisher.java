@@ -2,6 +2,7 @@ package ru.itmo.ipkn.yuriufimtsev.service.rateplan.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.itmo.ipkn.yuriufimtsev.service.rateplan.model.OutboxEvent;
@@ -15,7 +16,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OutboxPublisher {
 
+    private static final String TOPIC = "rateplan-events";
+
     private final OutboxRepository outboxRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Scheduled(fixedDelay = 5000)
     public void publishPendingEvents() {
@@ -23,7 +27,8 @@ public class OutboxPublisher {
 
         for (OutboxEvent event : events) {
             try {
-                log.info("Publishing event: type={}, aggregateId={}", event.getEventType(), event.getAggregateId());
+                kafkaTemplate.send(TOPIC, event.getAggregateId(), event.getEventType() + ":" + event.getPayload());
+                log.info("Published event to Kafka: type={}, aggregateId={}", event.getEventType(), event.getAggregateId());
                 event.setStatus(OutboxStatus.SENT);
                 outboxRepository.save(event);
             } catch (Exception e) {
