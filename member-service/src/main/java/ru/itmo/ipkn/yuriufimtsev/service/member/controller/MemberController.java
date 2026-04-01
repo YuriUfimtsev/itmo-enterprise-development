@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.itmo.ipkn.yuriufimtsev.service.member.dto.AssignRatePlanRequest;
+import ru.itmo.ipkn.yuriufimtsev.service.member.dto.MemberCreateRequest;
 import ru.itmo.ipkn.yuriufimtsev.service.member.model.Member;
 import ru.itmo.ipkn.yuriufimtsev.service.member.service.MemberService;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -32,20 +33,17 @@ public class MemberController {
 
     @PostMapping
     @Operation(summary = "Регистрация посетителя")
-    public ResponseEntity<EntityModel<Map<String, Long>>> registerMember(@RequestParam String firstName,
-                                                                         @RequestParam String lastName,
-                                                                         @RequestParam LocalDate birthDate,
-                                                                         @RequestParam String email) {
-        Long id = memberService.registerMember(firstName, lastName, birthDate, email);
+    public ResponseEntity<EntityModel<Map<String, Long>>> registerMember(@RequestBody MemberCreateRequest request) {
+        Long id = memberService.registerMember(request.getFirstName(), request.getLastName(),
+                request.getBirthDate(), request.getEmail());
         return ResponseEntity.ok(EntityModel.of(Map.of("id", id),
-                linkTo(methodOn(MemberController.class).findByEmail(email)).withSelfRel()));
+                linkTo(methodOn(MemberController.class).findByEmail(request.getEmail())).withSelfRel()));
     }
 
     @PostMapping("/assign-rate-plan")
     @Operation(summary = "Назначение тарифного плана посетителю")
-    public ResponseEntity<Void> assignRatePlan(@RequestParam String memberEmail,
-                                               @RequestParam Long ratePlanId) {
-        memberService.assignRatePlan(memberEmail, ratePlanId);
+    public ResponseEntity<Void> assignRatePlan(@RequestBody AssignRatePlanRequest request) {
+        memberService.assignRatePlan(request.getMemberEmail(), request.getRatePlanId());
         return ResponseEntity.ok().build();
     }
 

@@ -264,7 +264,7 @@ class RatePlanServiceTest {
                 .timeFrom(LocalTime.of(8, 0))
                 .timeTo(LocalTime.of(12, 0))
                 .build();
-        when(ratePlanRepository.searchActual(PolicyType.TimeWindow, null, null, null, null))
+        when(ratePlanRepository.searchActual("TimeWindow", null, null, null, null))
                 .thenReturn(List.of(plan));
 
         List<RatePlan> results = ratePlanService.searchRatePlans(request);

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.itmo.ipkn.yuriufimtsev.service.member.model.Member;
 import ru.itmo.ipkn.yuriufimtsev.service.member.service.MemberService;
@@ -41,10 +42,10 @@ class MemberControllerTest {
         when(memberService.registerMember(any(), any(), any(), any())).thenReturn(1L);
 
         mockMvc.perform(post("/api/members")
-                        .param("firstName", "Ivan")
-                        .param("lastName", "Ivanov")
-                        .param("birthDate", "2000-01-01")
-                        .param("email", "user@test.com"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"firstName":"Ivan","lastName":"Ivanov","birthDate":"2000-01-01","email":"user@test.com"}
+                                """))
                 .andExpect(status().isOk());
     }
 
@@ -65,8 +66,10 @@ class MemberControllerTest {
         doNothing().when(memberService).assignRatePlan("user@test.com", 1L);
 
         mockMvc.perform(post("/api/members/assign-rate-plan")
-                        .param("memberEmail", "user@test.com")
-                        .param("ratePlanId", "1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"memberEmail":"user@test.com","ratePlanId":1}
+                                """))
                 .andExpect(status().isOk());
     }
 }

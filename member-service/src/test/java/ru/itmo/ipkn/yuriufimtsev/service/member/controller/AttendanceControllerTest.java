@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.itmo.ipkn.yuriufimtsev.service.member.model.Attendance;
 import ru.itmo.ipkn.yuriufimtsev.service.member.service.AttendanceService;
@@ -30,7 +31,10 @@ class AttendanceControllerTest {
         when(attendanceService.registerAttendance(1L)).thenReturn(attendance);
 
         mockMvc.perform(post("/api/attendances")
-                        .param("memberId", "1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"memberId":1}
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.allowed").value(true));
     }
@@ -43,7 +47,10 @@ class AttendanceControllerTest {
         when(attendanceService.registerAttendance(1L)).thenReturn(attendance);
 
         mockMvc.perform(post("/api/attendances")
-                        .param("memberId", "1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"memberId":1}
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.allowed").value(false))
                 .andExpect(jsonPath("$.reason").value("Не найден актуальный абонемент посетителя"));

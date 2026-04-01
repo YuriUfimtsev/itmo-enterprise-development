@@ -30,7 +30,7 @@ public class RatePlanService {
         validatePolicyParams(request);
 
         Optional<RatePlan> duplicate = ratePlanRepository.findDuplicateActual(
-                request.getPolicyType(), request.getDaysDuration(),
+                request.getPolicyType().name(), request.getDaysDuration(),
                 request.getTimeFrom(), request.getTimeTo(), request.getWeeklyLimit());
 
         if (duplicate.isPresent()) {
@@ -75,7 +75,8 @@ public class RatePlanService {
 
     public List<RatePlan> searchRatePlans(RatePlanSearchRequest request) {
         return ratePlanRepository.searchActual(
-                request.getPolicyType(), request.getDaysDuration(),
+                request.getPolicyType() != null ? request.getPolicyType().name() : null,
+                request.getDaysDuration(),
                 request.getTimeFrom(), request.getTimeTo(), request.getWeeklyLimit());
     }
 

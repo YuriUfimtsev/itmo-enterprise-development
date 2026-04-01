@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.itmo.ipkn.yuriufimtsev.service.member.dto.AttendanceRequest;
 import ru.itmo.ipkn.yuriufimtsev.service.member.model.Attendance;
 import ru.itmo.ipkn.yuriufimtsev.service.member.service.AttendanceService;
 
@@ -19,8 +20,8 @@ public class AttendanceController {
 
     @PostMapping
     @Operation(summary = "Регистрация посещения", description = "Проверяет абонемент и политику доступа, возвращает решение о допуске")
-    public ResponseEntity<EntityModel<Attendance>> registerAttendance(@RequestParam Long memberId) {
-        Attendance attendance = attendanceService.registerAttendance(memberId);
+    public ResponseEntity<EntityModel<Attendance>> registerAttendance(@RequestBody AttendanceRequest request) {
+        Attendance attendance = attendanceService.registerAttendance(request.getMemberId());
         return ResponseEntity.ok(EntityModel.of(attendance));
     }
 }
