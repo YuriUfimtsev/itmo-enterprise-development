@@ -5,7 +5,7 @@ spring:
   application:
     name: rateplan-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/rateplan_db
+    url: jdbc:postgresql://localhost:5434/rateplan_db
     username: postgres
     password: postgres
   jpa:

@@ -20,6 +20,25 @@ spring:
           predicates:
             - Path=/api/rate-plans/**,/api/outbox/**
 
+        - id: auth-service-docs
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth-docs/**
+          filters:
+            - StripPrefix=1
+        - id: member-service-docs
+          uri: lb://member-service
+          predicates:
+            - Path=/member-docs/**
+          filters:
+            - StripPrefix=1
+        - id: rateplan-service-docs
+          uri: lb://rateplan-service
+          predicates:
+            - Path=/rateplan-docs/**
+          filters:
+            - StripPrefix=1
+
 eureka:
   client:
     service-url:

@@ -32,6 +32,63 @@ services:
     volumes:
       - rateplan-data:/var/lib/postgresql/data
 
+  eureka:
+    build:
+      context: .
+      dockerfile: eureka/Dockerfile
+    ports:
+      - '8761:8761'
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    ports:
+      - '8080:8080'
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
+    depends_on:
+      - eureka
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    ports:
+      - '8081:8081'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/auth_db
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
+    depends_on:
+      - auth-db
+      - eureka
+
+  member-service:
+    build:
+      context: .
+      dockerfile: member-service/Dockerfile
+    ports:
+      - '8082:8082'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://member-db:5432/member_db
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
+    depends_on:
+      - member-db
+      - eureka
+
+  rateplan-service:
+    build:
+      context: .
+      dockerfile: rateplan-service/Dockerfile
+    ports:
+      - '8083:8083'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://rateplan-db:5432/rateplan_db
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
+    depends_on:
+      - rateplan-db
+      - eureka
+
 volumes:
   auth-data:
   member-data:
