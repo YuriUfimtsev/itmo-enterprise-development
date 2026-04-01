@@ -1,0 +1,200 @@
+openapi: 3.1.0
+info:
+  title: Member Service API
+  description: "Сервис управления посетителями, абонементами и посещениями"
+  version: "1.0"
+servers:
+  - url: http://localhost:8082
+    description: Generated server url
+tags:
+  - name: Посетители
+    description: Управление посетителями и абонементами
+  - name: Посещения
+    description: Регистрация посещений с проверкой доступа
+paths:
+  /api/members:
+    get:
+      tags:
+        - Посетители
+      summary: Поиск посетителя по email
+      operationId: findByEmail
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/EntityModelMember"
+    post:
+      tags:
+        - Посетители
+      summary: Регистрация посетителя
+      operationId: registerMember
+      parameters:
+        - name: firstName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lastName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: birthDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/EntityModelMapStringLong"
+  /api/members/assign-rate-plan:
+    post:
+      tags:
+        - Посетители
+      summary: Назначение тарифного плана посетителю
+      operationId: assignRatePlan
+      parameters:
+        - name: memberEmail
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: ratePlanId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /api/attendances:
+    post:
+      tags:
+        - Посещения
+      summary: Регистрация посещения
+      description: "Проверяет абонемент и политику доступа, возвращает решение о д\
+        опуске"
+      operationId: registerAttendance
+      parameters:
+        - name: memberId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/EntityModelAttendance"
+  /api/members/{id}:
+    get:
+      tags:
+        - Посетители
+      summary: Получение посетителя по Id
+      operationId: getMember
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/EntityModelMember"
+components:
+  schemas:
+    EntityModelMapStringLong:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Links"
+    EntityModelAttendance:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        memberId:
+          type: integer
+          format: int64
+        timestamp:
+          type: string
+          format: date-time
+        allowed:
+          type: boolean
+        reason:
+          type: string
+        _links:
+          $ref: "#/components/schemas/Links"
+    EntityModelMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - MEMBER
+            - ADMIN
+        _links:
+          $ref: "#/components/schemas/Links"
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        hreflang:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+        templated:
+          type: boolean
+    Links:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/Link"

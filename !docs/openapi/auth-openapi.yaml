@@ -1,0 +1,92 @@
+openapi: 3.1.0
+info:
+  title: Auth Service API
+  description: Сервис аутентификации и управления администраторами
+  version: "1.0"
+servers:
+  - url: http://localhost:8081
+    description: Generated server url
+tags:
+  - name: Аутентификация
+    description: Регистрация и аутентификация администраторов
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Аутентификация
+      summary: Регистрация нового администратора
+      operationId: registerAdmin
+      parameters:
+        - name: firstName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lastName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: birthDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/auth/login:
+    post:
+      tags:
+        - Аутентификация
+      summary: Аутентификация администратора
+      description: Возвращает JWT-токен
+      operationId: authenticate
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/auth/confirm:
+    post:
+      tags:
+        - Аутентификация
+      summary: Подтверждение регистрации администратора
+      operationId: confirmAdmin
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+components:
+  schemas: {}

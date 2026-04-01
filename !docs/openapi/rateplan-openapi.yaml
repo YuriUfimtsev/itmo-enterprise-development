@@ -1,0 +1,221 @@
+openapi: 3.1.0
+info:
+  title: RatePlan Service API
+  description: Сервис управления тарифными планами
+  version: "1.0"
+servers:
+  - url: http://localhost:8083
+    description: Generated server url
+tags:
+  - name: Тарифные планы
+    description: CRUD-операции над тарифными планами
+paths:
+  /api/rate-plans/{id}/price:
+    put:
+      tags:
+        - Тарифные планы
+      summary: Обновление цены тарифного плана
+      operationId: updatePrice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatePlanUpdatePriceRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/rate-plans:
+    get:
+      tags:
+        - Тарифные планы
+      summary: Поиск тарифных планов
+      description: Фильтрация по политике и параметрам. Без параметров возвращает
+        все активные планы
+      operationId: searchRatePlans
+      parameters:
+        - name: request
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/RatePlanSearchRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CollectionModelEntityModelRatePlan"
+    post:
+      tags:
+        - Тарифные планы
+      summary: Создание тарифного плана
+      operationId: createRatePlan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatePlanCreateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/EntityModelRatePlan"
+  /api/rate-plans/{id}:
+    get:
+      tags:
+        - Тарифные планы
+      summary: Получение тарифного плана по Id
+      operationId: getRatePlan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/EntityModelRatePlan"
+    delete:
+      tags:
+        - Тарифные планы
+      summary: Удаление (деактивация) тарифного плана
+      operationId: deleteRatePlan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    RatePlanUpdatePriceRequest:
+      type: object
+      properties:
+        ratePlanId:
+          type: integer
+          format: int64
+        newPrice:
+          type: number
+    RatePlanCreateRequest:
+      type: object
+      properties:
+        policyType:
+          type: string
+          enum:
+            - Unlimited
+            - TimeWindow
+            - WeeklyLimit
+        daysDuration:
+          type: integer
+          format: int32
+        price:
+          type: number
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+        weeklyLimit:
+          type: integer
+          format: int32
+    EntityModelRatePlan:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        policyType:
+          type: string
+          enum:
+            - Unlimited
+            - TimeWindow
+            - WeeklyLimit
+        daysDuration:
+          type: integer
+          format: int32
+        price:
+          type: number
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+        weeklyLimit:
+          type: integer
+          format: int32
+        actual:
+          type: boolean
+        _links:
+          $ref: "#/components/schemas/Links"
+    RatePlanSearchRequest:
+      type: object
+      properties:
+        policyType:
+          type: string
+          enum:
+            - Unlimited
+            - TimeWindow
+            - WeeklyLimit
+        daysDuration:
+          type: integer
+          format: int32
+        timeFrom:
+          type: string
+        timeTo:
+          type: string
+        weeklyLimit:
+          type: integer
+          format: int32
+    CollectionModelEntityModelRatePlan:
+      type: object
+      properties:
+        _embedded:
+          type: object
+          properties:
+            ratePlanList:
+              type: array
+              items:
+                $ref: "#/components/schemas/EntityModelRatePlan"
+        _links:
+          $ref: "#/components/schemas/Links"
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        hreflang:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+        templated:
+          type: boolean
+    Links:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/Link"
