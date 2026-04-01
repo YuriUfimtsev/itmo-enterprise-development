@@ -6,19 +6,22 @@ spring:
     name: gateway
   cloud:
     gateway:
-      routes:
-        - id: auth-service
-          uri: lb://auth-service
-          predicates:
-            - Path=/api/auth/**
-        - id: member-service
-          uri: lb://member-service
-          predicates:
-            - Path=/api/members/**,/api/attendances/**
-        - id: rateplan-service
-          uri: lb://rateplan-service
-          predicates:
-            - Path=/api/rate-plans/**,/api/outbox/**
+      server:
+        webmvc:
+          routes:
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/**
+            - id: member-service
+              uri: lb://member-service
+              predicates:
+                - Path=/api/members/**,/api/attendances/**
+            - id: rateplan-service
+              uri: lb://rateplan-service
+              predicates:
+                - Path=/api/rate-plans/**,/api/outbox/**
+          trusted-proxies: ".*"
 
 eureka:
   client:
