@@ -1,0 +1,23 @@
+server:
+  port: 8081
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:postgresql://localhost:5435/auth_db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  secret: c2VjcmV0S2V5Rm9ySnd0VG9rZW5HZW5lcmF0aW9uMTIzNDU2Nzg5MA==
+  expiration-ms: 3600000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
